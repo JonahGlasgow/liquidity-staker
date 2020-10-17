@@ -33,5 +33,5 @@ Deployment Instructions:
 Special thank to the Sparkle Loyalty Team for Contributing on this project.  
 
 Forked from Uniswap 
-[https://github.com/Uniswap/liquidity-staker](Uniswap Liquidity Staker)
+[Uniswap Liquidity Staker](https://github.com/Uniswap/liquidity-staker)
 
