@@ -1,14 +1,17 @@
 # @Com-XethLiquidityStaker
 
 # Description
-Xplosive Ethereum liquidity mining ☻
-Deposit your Liquidity Provider tokens to receive XETH, the most Xplosive Ethereum token on mainnet!
+Xplosive Ethereum liquidity mining
+
+Deposit your Liquidity Provider tokens to receive [XETH](https://www.coingecko.com/en/coins/xplosive-ethereum), the most **Xplosive Ethereum** token on mainnet!
 
 # Liquidity Mining
 
-An initial liquidity mining program will go live 10/20/2020 @ 12:00pm (UTC). The initial program will run until 12/20/2020 @ 12:00pm (UTC). and target the following pool on Uniswap v2:
+An initial liquidity mining program will go live **10/20/2020 @ 12:00pm (UTC)**. 
 
-ETH/XETH
+The initial program will run until **12/20/2020 @ 12:00pm (UTC)**. and target the following pool on Uniswap v2:
+
+[ETH/XETH](https://info.uniswap.org/pair/0xac0fe6c0b239eedcc12bc3e997e5492b04cc61c3)
 
 100,000 XETH will be allocated per pool to LPs proportional to liquidity, which roughly translates to:
 
