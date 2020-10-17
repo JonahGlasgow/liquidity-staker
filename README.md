@@ -30,7 +30,7 @@ Deployment Instructions:
 3. Deploy Project
 
 # Notable Mentions
-Special thank to the Sparkle Loyalty Team for Contributing on this project.  
+Special thank to the [Sparkle Loyalty Community](https://t.me/Sparkleloyalty) for contributing on this project.  
 
 Forked from Uniswap 
 [Uniswap Liquidity Staker](https://github.com/Uniswap/liquidity-staker)
