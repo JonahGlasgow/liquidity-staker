@@ -21,7 +21,7 @@ These XETH are not subject to vesting or lock up.
 # Basic Configuration
 Contracts:
 1. StakingRewardsFactory.sol - *Staking Pool Deployer*
-2. StakingRewards.sol - *Deploys each Pool* 
+2. StakingRewards.sol - *Deploys Each Individual LP Staking Pool* 
 3. RewardsDistributionRecipient.sol - *Recipient Validator* 
 
 Deployment Instructions: 
