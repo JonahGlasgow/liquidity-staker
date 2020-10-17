@@ -1,7 +1,13 @@
+/**
+* @dev Xplosive Ethereum StakingRewardsFactory *Vetted* by COM Community
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+*/
+
+
 pragma solidity ^0.5.16;
 
-import 'openzeppelin-solidity-2.3.0/contracts/token/ERC20/IERC20.sol';
-import 'openzeppelin-solidity-2.3.0/contracts/ownership/Ownable.sol';
+import './openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import './openzeppelin-contracts/contracts/ownership/Ownable.sol';
 
 import './StakingRewards.sol';
 
@@ -36,12 +42,13 @@ contract StakingRewardsFactory is Ownable {
 
     // deploy a staking reward contract for the staking token, and store the reward amount
     // the reward will be distributed to the staking reward contract no sooner than the genesis
-    function deploy(address stakingToken, uint rewardAmount) public onlyOwner {
+    function deploy(address stakingToken, address collectionAddress, uint rewardAmount) public onlyOwner {
         StakingRewardsInfo storage info = stakingRewardsInfoByStakingToken[stakingToken];
         require(info.stakingRewards == address(0), 'StakingRewardsFactory::deploy: already deployed');
 
-        info.stakingRewards = address(new StakingRewards(/*_rewardsDistribution=*/ address(this), rewardsToken, stakingToken));
+        info.stakingRewards = address(new StakingRewards(/*_rewardsDistribution=*/ address(this), rewardsToken, stakingToken, collectionAddress));
         info.rewardAmount = rewardAmount;
+//        info.collectionAddress = collectionAddress;
         stakingTokens.push(stakingToken);
     }
 

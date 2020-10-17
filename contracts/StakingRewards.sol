@@ -1,10 +1,16 @@
+/**
+* @dev Xplosive Ethereum StakingRewards *Vetted* by COM Community
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+*/
+
+
 pragma solidity ^0.5.16;
 
-import "openzeppelin-solidity-2.3.0/contracts/math/Math.sol";
-import "openzeppelin-solidity-2.3.0/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity-2.3.0/contracts/token/ERC20/ERC20Detailed.sol";
-import "openzeppelin-solidity-2.3.0/contracts/token/ERC20/SafeERC20.sol";
-import "openzeppelin-solidity-2.3.0/contracts/utils/ReentrancyGuard.sol";
+import "./openzeppelin-contracts/contracts/math/Math.sol";
+import "./openzeppelin-contracts/contracts/math/SafeMath.sol";
+import "./openzeppelin-contracts/contracts/token/ERC20/ERC20Detailed.sol";
+import "./openzeppelin-contracts/contracts/token/ERC20/SafeERC20.sol";
+import "./openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 
 // Inheritance
 import "./interfaces/IStakingRewards.sol";
@@ -23,6 +29,13 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     uint256 public rewardsDuration = 60 days;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
+    
+   // ** The collectionAddress will charge a fee 
+   // for vetting the staking pool and or unknown project.
+   // Essentialy you are putting Project "A" good name 
+   // on the line for project "B" in return for a stake percentage.
+   
+    address public collectionAddress;
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
@@ -35,11 +48,13 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     constructor(
         address _rewardsDistribution,
         address _rewardsToken,
-        address _stakingToken
+        address _stakingToken,
+        address _collectionAddress
     ) public {
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
         rewardsDistribution = _rewardsDistribution;
+        collectionAddress = _collectionAddress;
     }
 
     /* ========== VIEWS ========== */
@@ -50,6 +65,10 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
 
     function balanceOf(address account) external view returns (uint256) {
         return _balances[account];
+    }
+    
+    function CollectorAddress() public view returns (address) {
+        return collectionAddress;
     }
 
     function lastTimeRewardApplicable() public view returns (uint256) {
@@ -105,11 +124,16 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     }
 
     function getReward() public nonReentrant updateReward(msg.sender) {
-        uint256 reward = rewards[msg.sender];
+   // Currently set to 1% of the RewardPaid amount ie 100 * 10 ^ 18 = 1e20 
+        uint256 collectionAddfee = rewards[msg.sender].div(1e20);
+        uint256 reward = rewards[msg.sender].sub(collectionAddfee);
         if (reward > 0) {
             rewards[msg.sender] = 0;
+            rewardsToken.safeTransfer(collectionAddress, collectionAddfee); 
             rewardsToken.safeTransfer(msg.sender, reward);
             emit RewardPaid(msg.sender, reward);
+           // emit amount rewarded to collectionAddress 
+            emit CollectionAddPaid(collectionAddress, collectionAddfee); 
         }
     }
 
@@ -159,6 +183,8 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
+    event CollectionAddPaid(address collectionAddress, uint256 collectionAddfee);
+    
 }
 
 interface IUniswapV2ERC20 {
