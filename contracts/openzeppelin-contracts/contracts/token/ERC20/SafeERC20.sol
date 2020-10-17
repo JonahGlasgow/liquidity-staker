@@ -1,3 +1,8 @@
+/**
+* @dev Xplosive Ethereum Build
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
+*/
+
 pragma solidity ^0.5.0;
 
 import "./IERC20.sol";
