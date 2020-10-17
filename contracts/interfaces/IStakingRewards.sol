@@ -1,3 +1,8 @@
+/**
+* @dev Xplosive Ethereum Build
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
+*/
+
 pragma solidity >=0.4.24;
 
 

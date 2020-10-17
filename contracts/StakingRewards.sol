@@ -1,6 +1,6 @@
 /**
 * @dev Xplosive Ethereum StakingRewards *Vetted* by COM Community
-* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
 */
 
 
