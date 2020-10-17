@@ -5,7 +5,7 @@ Xplosive Ethereum liquidity mining
 
 Deposit your Liquidity Provider tokens to receive [XETH](https://www.coingecko.com/en/coins/xplosive-ethereum), the most **Xplosive Ethereum** token on mainnet!
 
-Deployed Factory Contract:[StakingRewardsFactory](https://etherscan.io/address/0x078fcf4c11f58968b364a40a52cbb28e5514b592)
+Deployed Factory Contract: [StakingRewardsFactory](https://etherscan.io/address/0x078fcf4c11f58968b364a40a52cbb28e5514b592)
 
 Deployed StakingRewards Contract: TBA on 10/20/2020 @ 12:00pm (UTC).
 
