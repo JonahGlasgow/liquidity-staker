@@ -1,4 +1,4 @@
-# @Com-XethLiquidityStaker
+# @xETH-LiquidityStaker
 
 # Description
 Xplosive Ethereum liquidity mining
