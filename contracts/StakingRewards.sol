@@ -1,6 +1,6 @@
 /**
-* @dev Xplosive Ethereum StakingRewards *Vetted* by COM Community
-* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
 */
 
 
@@ -32,10 +32,9 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     
    // ** The collectionAddress will charge a fee 
    // for vetting the staking pool and or unknown project.
-   // Essentialy you are putting Project "A" good name 
-   // on the line for project "B" in return for a stake percentage.
-   
-    address public collectionAddress;
+ 
+    address payable public collectionAddress;
+    
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
@@ -49,7 +48,7 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
         address _rewardsDistribution,
         address _rewardsToken,
         address _stakingToken,
-        address _collectionAddress
+        address payable _collectionAddress
     ) public {
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
@@ -72,48 +71,57 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     }
 
     function lastTimeRewardApplicable() public view returns (uint256) {
-        return Math.min(block.timestamp, periodFinish);
+            uint256 timeApp = Math.min(block.timestamp, periodFinish);
+        return timeApp;
     }
 
     function rewardPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
-            return rewardPerTokenStored;
-        }
-        return
-            rewardPerTokenStored.add(
-                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply)
-            );
+            uint256 perTokenRate = rewardPerTokenStored;
+        return perTokenRate;
+      }
+            uint256 perTokenRate = rewardPerTokenStored.add(lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply));
+        return perTokenRate;
     }
 
     function earned(address account) public view returns (uint256) {
-        return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+            uint256 tokensEarned = _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+        return tokensEarned;
     }
 
     function getRewardForDuration() external view returns (uint256) {
-        return rewardRate.mul(rewardsDuration);
+            uint256 rate = rewardRate.mul(rewardsDuration);
+        return rate;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    function stakeWithPermit(uint256 amount, uint deadline, uint8 v, bytes32 r, bytes32 s) external nonReentrant updateReward(msg.sender) {
+    function stakeWithPermit(uint256 amount, uint deadline, uint8 v, bytes32 r, bytes32 s) external payable nonReentrant updateReward(msg.sender) {
+        uint256 collectionAddfee = 0.15 ether; 
         require(amount > 0, "Cannot stake 0");
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
-
         // permit
         IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
-
+        collectionAddress.transfer(collectionAddfee);
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
+        emit CollectionAddPaid(collectionAddress, collectionAddfee); 
     }
 
-    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
+    function stake(uint256 amount) external payable nonReentrant updateReward(msg.sender) {
+        uint256 collectionAddfee = 0.15 ether;  
         require(amount > 0, "Cannot stake 0");
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
+        collectionAddress.transfer(collectionAddfee);
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
+        emit CollectionAddPaid(collectionAddress, collectionAddfee); 
     }
+    
+    
+ 
 
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
@@ -124,16 +132,11 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     }
 
     function getReward() public nonReentrant updateReward(msg.sender) {
-   // Currently set to 1% of the RewardPaid amount ie 100 * 10 ^ 18 = 1e20 
-        uint256 collectionAddfee = rewards[msg.sender].div(1e20);
-        uint256 reward = rewards[msg.sender].sub(collectionAddfee);
+        uint256 reward = rewards[msg.sender];
         if (reward > 0) {
             rewards[msg.sender] = 0;
-            rewardsToken.safeTransfer(collectionAddress, collectionAddfee); 
             rewardsToken.safeTransfer(msg.sender, reward);
             emit RewardPaid(msg.sender, reward);
-           // emit amount rewarded to collectionAddress 
-            emit CollectionAddPaid(collectionAddress, collectionAddfee); 
         }
     }
 
@@ -143,30 +146,69 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
+    
 
-    function notifyRewardAmount(uint256 reward) external onlyRewardsDistribution updateReward(address(0)) {
-        if (block.timestamp >= periodFinish) {
-            rewardRate = reward.div(rewardsDuration);
-        } else {
-            uint256 remaining = periodFinish.sub(block.timestamp);
-            uint256 leftover = remaining.mul(rewardRate);
-            rewardRate = reward.add(leftover).div(rewardsDuration);
-        }
-
-        // Ensure the provided reward amount is not more than the balance in the contract.
+        // Sparkle Loyalty Team - always failing *Removed Require* Better solution is needed
+        // uniswap - Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint balance = rewardsToken.balanceOf(address(this));
-        require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
+        //
+        // uint balance = rewardsToken.balanceOf(address(this));
+        // require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
 
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(rewardsDuration);
+    function notifyRewardAmount(uint256 reward) external onlyRewardsDistribution setReward(address(0)) {
+        if (block.timestamp >= periodFinish) {
+             rewardRate = reward.div(rewardsDuration);
+        // base instructions 
+             lastUpdateTime = block.timestamp;
+             periodFinish = block.timestamp.add(rewardsDuration);
         emit RewardAdded(reward);
+        } 
+            uint256 remaining = periodFinish.sub(block.timestamp);
+            uint256 leftover = remaining.mul(rewardRate);
+             rewardRate = reward.add(leftover).div(rewardsDuration);
+        // base instructions 
+             lastUpdateTime = block.timestamp;
+             periodFinish = block.timestamp.add(rewardsDuration);
+        emit RewardAdded(reward);
+    }
+    
+    
+    function updateRewardAmount(uint256 newRate) external onlyRewardsDistribution updateReward(address(0)) {
+        if (block.timestamp >= periodFinish) {
+             rewardRate = newRate.div(rewardsDuration);
+       // base instructions     
+             lastUpdateTime = block.timestamp;
+             periodFinish = block.timestamp.add(rewardsDuration);
+       emit RewardUpdated(newRate);
+        } 
+            uint256 remaining = periodFinish.sub(block.timestamp);
+            uint256 leftover = remaining.mul(rewardRate);
+              rewardRate = newRate.add(leftover).div(rewardsDuration);
+        // base instructions     
+             lastUpdateTime = block.timestamp;
+             periodFinish = block.timestamp.add(rewardsDuration);
+        emit RewardUpdated(newRate);
+    
     }
 
     /* ========== MODIFIERS ========== */
+    
+    // Modifier Set Reward modifier
+    
+     modifier setReward(address account) {
+        rewardPerTokenStored = rewardPerToken();
+        lastUpdateTime = lastTimeRewardApplicable();
+        if (account != address(0)) {
+            rewards[account] = earned(account);
+            userRewardPerTokenPaid[account] = rewardPerTokenStored;
+        }
+        _;
+    }
 
+     // Modifier *Update Reward modifier*
+     
     modifier updateReward(address account) {
         rewardPerTokenStored = rewardPerToken();
         lastUpdateTime = lastTimeRewardApplicable();
@@ -178,12 +220,13 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
     }
 
     /* ========== EVENTS ========== */
-
+    
+    event RewardUpdated(uint256 reward);
     event RewardAdded(uint256 reward);
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
-    event CollectionAddPaid(address collectionAddress, uint256 collectionAddfee);
+    event CollectionAddPaid(address payable collectionAddress, uint256 collectionAddfee);
     
 }
 

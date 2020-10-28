@@ -1,6 +1,6 @@
 /**
-* @dev Xplosive Ethereum Build
-* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
 */
 
 pragma solidity ^0.5.0;

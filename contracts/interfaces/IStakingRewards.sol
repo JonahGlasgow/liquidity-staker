@@ -1,6 +1,6 @@
 /**
-* @dev Xplosive Ethereum Build
-* @author Sparkle Loyalty Team ♥♥♥ SPRKL 
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
 */
 
 pragma solidity >=0.4.24;
@@ -22,8 +22,8 @@ interface IStakingRewards {
 
     // Mutative
 
-    function stake(uint256 amount) external;
-
+    function stake(uint256 amount) external payable;
+    
     function withdraw(uint256 amount) external;
 
     function getReward() external;
