@@ -163,14 +163,15 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
         // base instructions 
              lastUpdateTime = block.timestamp;
              periodFinish = block.timestamp.add(rewardsDuration);
-        emit RewardAdded(reward);
-        } 
+        } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
             uint256 leftover = remaining.mul(rewardRate);
              rewardRate = reward.add(leftover).div(rewardsDuration);
         // base instructions 
              lastUpdateTime = block.timestamp;
              periodFinish = block.timestamp.add(rewardsDuration);
+
+        }   
         emit RewardAdded(reward);
     }
     
@@ -180,17 +181,16 @@ contract StakingRewards is IStakingRewards, RewardsDistributionRecipient, Reentr
              rewardRate = newRate.div(rewardsDuration);
        // base instructions     
              lastUpdateTime = block.timestamp;
-             periodFinish = block.timestamp.add(rewardsDuration);
-       emit RewardUpdated(newRate);
-        } 
+             periodFinish = block.timestamp.add(rewardsDuration);   
+        } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
             uint256 leftover = remaining.mul(rewardRate);
               rewardRate = newRate.add(leftover).div(rewardsDuration);
         // base instructions     
              lastUpdateTime = block.timestamp;
              periodFinish = block.timestamp.add(rewardsDuration);
+        }   
         emit RewardUpdated(newRate);
-    
     }
 
     /* ========== MODIFIERS ========== */
