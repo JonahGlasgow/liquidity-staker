@@ -17,13 +17,11 @@ The initial program will run until **12/20/2020 @ 12:00pm (UTC)**. and target th
 
 **Target LP Pair** - [ETH/XETH](https://info.uniswap.org/pair/0xac0fe6c0b239eedcc12bc3e997e5492b04cc61c3)
 
-100,000 XETH will be allocated per pool to LPs proportional to liquidity, which roughly translates to:
+300,000 XETH will be allocated per pool to LPs proportional to liquidity, which roughly translates to:
 
-1600 XETH for each pool per day
+5000 XETH for each pool per day
 
-0.2438281012 XETH for each pool per block (14s blocktime)
-
-These XETH are not subject to vesting or lock up.
+Liquidity token deposits of XETH/ETH are not subject to vesting or lock up.
 
 # Basic Configuration
 Contracts:
