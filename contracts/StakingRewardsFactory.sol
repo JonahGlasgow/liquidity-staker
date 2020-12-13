@@ -1,7 +1,13 @@
+/**
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+*/
+
+
 pragma solidity ^0.5.16;
 
-import 'openzeppelin-solidity-2.3.0/contracts/token/ERC20/IERC20.sol';
-import 'openzeppelin-solidity-2.3.0/contracts/ownership/Ownable.sol';
+import './openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import './openzeppelin-contracts/contracts/ownership/Ownable.sol';
 
 import './StakingRewards.sol';
 

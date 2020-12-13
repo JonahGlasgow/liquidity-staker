@@ -1,3 +1,8 @@
+/**
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+*/
+
 pragma solidity ^0.5.16;
 
 contract RewardsDistributionRecipient {

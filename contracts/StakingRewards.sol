@@ -1,3 +1,9 @@
+/**
+* @dev StakingRewardsFactory v1.0.1
+* @author Sparkle Loyalty Team ♥♥♥ SPRKL
+*/
+
+
 pragma solidity ^0.5.16;
 
 import "openzeppelin-solidity-2.3.0/contracts/math/Math.sol";
